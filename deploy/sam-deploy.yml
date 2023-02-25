@@ -63,6 +63,7 @@ Resources:
                 - ssm:GetParameter
                 - ssm:GetParameters
                 - sts:AssumeRole
+                - secretsmanager:GetSecretValue
               Resource:
               - "*"
             - Effect: Allow
