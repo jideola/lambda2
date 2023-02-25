@@ -99,5 +99,6 @@ Resources:
               - sqs:SendMessage
               - sqs:GetQueueAttributes
               - sqs:GetQueueUrl
+              - lambda:DeleteFunction
               - sqs:ChangeMessageVisibility
               Resource: "*"
