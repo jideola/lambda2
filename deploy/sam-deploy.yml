@@ -103,3 +103,9 @@ Resources:
               - lambda:DeleteFunction
               - sqs:ChangeMessageVisibility
               Resource: "*"
+
+Parameters:
+  key1:
+    Type: String
+    Default: "default_value1"
+    
