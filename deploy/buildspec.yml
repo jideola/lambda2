@@ -9,8 +9,10 @@ phases:
       - ls
   build:
     commands:
+      - cd cloudwatch_lambda
       - ls
-      - zip -r9 cloudwatch_to_slack.zip ./cloudwatch_lambda/*
+      - zip -r9 cloudwatch_to_slack.zip ./
+      - cp cloudwatch_to_slack.zip ../cloudwatch_to_slack.zip
       - ls
       - pwd
       - aws s3 ls
