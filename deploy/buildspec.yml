@@ -12,3 +12,5 @@ phases:
       - zip -r cloudwatch_to_slack.zip cloudwatch_lambda
       - ls
       - echo "Success"
+      - which aws
+      - aws s3 ls
