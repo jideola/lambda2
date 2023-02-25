@@ -9,12 +9,11 @@ phases:
       - ls
   build:
     commands:
-      - zip -r cloudwatch_to_slack.zip cloudwatch_lambda
+      - zip -r9 cloudwatch_to_slack.zip cloudwatch_lambda
       - ls
       - echo "Success"
       - which aws
       - aws s3 ls
-      - aws s3 cp cloudwatch_to_slack.zip s3://main-cloudformation
       - aws cloudformation package --template-file deploy/sam-deploy.yml --s3-bucket main-cloudformation --s3-prefix lambda/prod --output-template-file deploy/packed-sam-deploy.yml
       - ls deploy/
 
