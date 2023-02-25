@@ -3,61 +3,101 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: my-bucket
-        S3Key: my-function.zip
-      Description: My Python Lambda Function
-      FunctionName: my-function
-      Handler: lambda_function.handler
+        S3Bucket: main-cloudformation
+        S3Key: cloudwatch_to_slack.zip
+      Description: Guardian-to-Slack
+      FunctionName: cloudwatch_to_slack
+      Handler: lambda_function.lambda_handler
       MemorySize: 128
-      Role: !GetAtt MyFunctionRole.Arn
-      Runtime: python3.9
+      Role: !GetAtt CloudwatchToSlackRole.Arn
+      Runtime: python3.7
       Timeout: 30
-    DependsOn:
-      - MyFunctionPermission
-      - MyFunctionRole
-    Tags:
-      Environment: production
-      Department: engineering
 
-  MyFunctionRole:
-    Type: AWS::IAM::Role
+
+  MySNSTopic:
+    Type: AWS::SNS::Topic
     Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Path: "/"
-      Policies:
-        - PolicyName: MyPolicy1
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: logs:CreateLogGroup
-                Resource: arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: arn:aws:logs:*:*:/aws/lambda/my-function
-        - PolicyName: MyPolicy2
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:PutObject
-                Resource: arn:aws:s3:::my-bucket/*
+      TopicName: guardian
 
-  MyFunctionPermission:
+  MySNSTopicLambdaSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: lambda
+      TopicArn: !Ref MySNSTopic
+      Endpoint: !GetAtt MyFunction.Arn
+    DependsOn:
+      - MySNSTopicLambdaPermission
+
+  MySNSTopicLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !Ref MyFunction
       Action: lambda:InvokeFunction
-      Principal: s3.amazonaws.com
-      SourceAccount: !Ref AWS::AccountId
-      SourceArn: arn:aws:s3:::my-bucket
+      FunctionName: !Ref MyFunction
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref MySNSTopic
+    DependsOn:
+      - MySNSTopic
+
+
+  CloudwatchToSlackRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - cloudformation.amazonaws.com
+              - lambda.amazonaws.com
+            Action:
+            - sts:AssumeRole
+      Policies:
+      - PolicyName: src
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+                - ssm:GetParameter
+                - ssm:GetParameters
+                - sts:AssumeRole
+              Resource:
+              - "*"
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:DescribeLogStreams
+              Resource:
+                - arn:aws:logs:*:*:*
+            - Effect: Allow
+              Action: cloudwatch:DescribeAlarms
+              Resource: '*'
+            - Effect: Allow
+              Action: cloudformation:ListExports
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - s3:ListBucket
+                - s3:PutObject
+                - s3:GetObject
+              Resource:
+                - !Sub 'arn:aws:s3:::*/'
+                - !Sub 'arn:aws:s3:::*/*'
+            - Effect: Allow
+              Action:
+                - s3:ListBucket
+              Resource:
+                - !Sub 'arn:aws:s3:::*/*'
+            - Effect: Allow
+              Action:
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:SendMessage
+              - sqs:GetQueueAttributes
+              - sqs:GetQueueUrl
+              - sqs:ChangeMessageVisibility
+              Resource: "*"

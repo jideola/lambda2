@@ -14,3 +14,12 @@ phases:
       - echo "Success"
       - which aws
       - aws s3 ls
+      - aws s3 cp cloudwatch_to_slack.zip s3://main-cloudformation
+      - aws cloudformation package --template-file deploy/sam-deploy.yml --s3-bucket main-cloudformation --s3-prefix lambda/prod --output-template-file packed-sam-deploy.yml
+      - if [ $0 -eq 0] && echo "Successful package" || echo "Cloudformation package failed"
+
+artifacts:
+  type: zip
+  files:
+  - deploy/packed-sam-deploy.yaml
+  - deploy/config/*.json
