@@ -9,6 +9,7 @@ phases:
       - ls
   build:
     commands:
+      - zip -r9 cloudwatch_to_slack.zip .
       - ls
       - echo "Success"
       - which aws
