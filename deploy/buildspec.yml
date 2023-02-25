@@ -22,4 +22,3 @@ artifacts:
   type: zip
   files:
   - deploy/packed-sam-deploy.yml
-  - deploy/config/*.json
