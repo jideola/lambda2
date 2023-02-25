@@ -5,8 +5,10 @@ phases:
     runtime-versions:
       python: 3.7
     commands:
-      - tf_version=$TERRAFORM_VERSION
-      - wget https://releases.hashicorp.com/terraform/1.3.8/terraform_1.3.8_linux_arm64.zip
+      - python -v
+      - apt-get install wget -y
+      - tf_version="1.3.8"
+      - wget https://releases.hashicorp.com/terraform/"$TERRAFORM_VERSION"/terraform_"$TERRAFORM_VERSION"_linux_amd64.zip
       - unzip terraform_"$TERRAFORM_VERSION"_linux_amd64.zip
       - mv terraform /usr/local/bin/
   build:
