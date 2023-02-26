@@ -3,25 +3,27 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.7
+      python: 3.9
     commands:
-      - python -v
-      - ls
+      - "cd /usr/bin"
+      - "curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/1.3.8/terraform_1.3.8_linux_amd64.zip"
+      - "unzip -o terraform.zip"
+      - cd "$CODEBUILD_SRC_DIR"
+      - "git clone https://github.com/jideola/lambda2.git"
+      - "ls"
+      - "cd lambda2"
+
+
+
   build:
     commands:
-      - cd cloudwatch_lambda
-      - ls
-      - zip -r9 cloudwatch_to_slack.zip ./
-      - cp cloudwatch_to_slack.zip ../cloudwatch_to_slack.zip
-      - ls
-      - pwd
-      - cd ..
-      - pwd
-      - aws s3 cp cloudwatch_to_slack.zip s3://main-cloudformation
-      - aws cloudformation package --template-file deploy/sam-deploy.yml --s3-bucket main-cloudformation --s3-prefix lambda/prod --output-template-file deploy/packed-sam-deploy.yml
-      - ls deploy/
+      - terraform init 
+      - terraform -auto-approve
+
+  post_build:
+    commands:
+      - echo "Terraform completed on `date`"
 
 artifacts:
-  type: zip
   files:
-  - deploy/packed-sam-deploy.yml
+    - '**/*'
