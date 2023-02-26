@@ -65,7 +65,7 @@ resource "aws_lambda_function" "cw_lambda2" {
   function_name                  = var.function_name
   role                           = aws_iam_role.lambda_role2.arn
   handler                        = "lambda_function.lambda_handler"
-  runtime                        = "python3.7"
+  runtime                        = "python3.9"
   depends_on                     = [aws_iam_role_policy_attachment.attach_iam_policy_to_iam_role]
 }
 
