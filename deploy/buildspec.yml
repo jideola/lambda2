@@ -10,13 +10,14 @@ phases:
       - "unzip -o terraform.zip"
       - cd "$CODEBUILD_SRC_DIR"
       - ls
+      - bash ci.sh
 
 
 
   build:
     commands:
       - terraform init 
-      - terraform -auto-approve
+      - terraform apply -auto-approve
 
   post_build:
     commands:
