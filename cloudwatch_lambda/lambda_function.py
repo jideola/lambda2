@@ -1,7 +1,7 @@
 import json
-from package import requests
-from package import boto3
-from package.exceptions import ClientError
+import requests
+import boto3
+from botocore.exceptions import ClientError
 
 
 def get_secret():
@@ -105,3 +105,26 @@ def lambda_handler(event, context):
         'body': response.json()
     }
 
+event={
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:951708231033:guardian:915d1719-b414-4500-a15d-960ff6a8f6e7",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "c0a141f9-6478-51b7-a33e-1d926611b692",
+        "TopicArn": "arn:aws:sns:us-east-1:951708231033:guardian",
+        "Subject": "OK: \"api-jideola domain alarm\" in US East (N. Virginia)",
+        "Message": "{\"AlarmName\":\"api-jideola domain alarm\",\"AlarmDescription\":\"This metric checks the status of the api-jideola.com health check.\",\"AWSAccountId\":\"951708231033\",\"AlarmConfigurationUpdatedTimestamp\":\"2023-02-18T16:41:38.351+0000\",\"NewStateValue\":\"OK\",\"NewStateReason\":\"Threshold Crossed: 2 out of the last 2 datapoints [3.0 (18/02/23 16:42:00), 3.0 (18/02/23 16:41:00)] were not less than the threshold (1.0) (minimum 1 datapoint for ALARM -> OK transition).\",\"StateChangeTime\":\"2023-02-18T16:43:21.231+0000\",\"Region\":\"US East (N. Virginia)\",\"AlarmArn\":\"arn:aws:cloudwatch:us-east-1:951708231033:alarm:api-jideola domain alarm\",\"OldStateValue\":\"ALARM\",\"OKActions\":[\"arn:aws:sns:us-east-1:951708231033:guardian\"],\"AlarmActions\":[\"arn:aws:sns:us-east-1:951708231033:guardian\"],\"InsufficientDataActions\":[\"arn:aws:sns:us-east-1:951708231033:guardian\"],\"Trigger\":{\"MetricName\":\"HealthCheckStatus\",\"Namespace\":\"AWS/Route53\",\"StatisticType\":\"Statistic\",\"Statistic\":\"SAMPLE_COUNT\",\"Unit\":null,\"Dimensions\":[{\"value\":\"afdf0e5a-b5ec-4eb0-8140-4fb83e928df6\",\"name\":\"HealthCheckId\"}],\"Period\":60,\"EvaluationPeriods\":2,\"DatapointsToAlarm\":2,\"ComparisonOperator\":\"LessThanThreshold\",\"Threshold\":1.0,\"TreatMissingData\":\"breaching\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+        "Timestamp": "2023-02-18T16:43:21.290Z",
+        "SignatureVersion": "1",
+        "Signature": "ii0riQwVcEMJ5EK+yhZzDeXVKwAugACj0sUfMwMIVdqbQumHtrzqv6SiefVuVeKc805UDzsvkh6B5AaKeZS/fs/sa4dax1r6NfK7BeVxOhO0gwFxPVLp+eMZk/5qRzA2/bCU0sOnYHHClOel1D08jU5DodaDn0Fq6eLKCMgbTlk1TwXC+NsGwo/bgI5eiGg96iahmeJOlPNy0h/5YR6RVcdKiPz92DYoUmY6zMAJLxI3IBdDvv/TSju4KHnFTIVIh40Yl3r4IN7C2X2eBBC+jhKWBxM8uW+QTRFDckKyghFwksmX5y+Tgrfd4Je8wosWVs8ZpScedZaqsCje3oBrbA==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:951708231033:guardian:915d1719-b414-4500-a15d-960ff6a8f6e7",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
+lambda_handler(event, 1)
